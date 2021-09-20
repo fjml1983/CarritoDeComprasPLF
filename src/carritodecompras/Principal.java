@@ -14,6 +14,18 @@ public class Principal {
         carrito.agregarProducto(new Producto("Libreta Prof. 100 hojas Scribe", 20.5, TipoProducto.PAPELERIA ));
         carrito.agregarProducto(new Producto("Libreta Fran. 90 hojas Scribe", 26, TipoProducto.PAPELERIA ));
         carrito.agregarProducto(new Producto("Libreta Fran. 90 hojas Scribe", 25, TipoProducto.PAPELERIA ));
+
+        Producto paquete = new Producto("Caja de jugos multisabores Jumex", 16.5, TipoProducto.PAQUETE );
+        paquete.agregarSubproducto(new Producto("Jugo de Uva",5.5,TipoProducto.BEBIDA));
+        paquete.agregarSubproducto(new Producto("Jugo de Manzana",5.5,TipoProducto.BEBIDA));
+        paquete.agregarSubproducto(new Producto("Jugo de Piña",5.5,TipoProducto.BEBIDA));
+        carrito.agregarProducto(paquete);
+        
+        paquete = new Producto("Caja de jugos multisabores Del Valle", 15, TipoProducto.PAQUETE );
+        paquete.agregarSubproducto(new Producto("Jugo de Pera",5,TipoProducto.BEBIDA));
+        paquete.agregarSubproducto(new Producto("Jugo de Guanabana",5,TipoProducto.BEBIDA));
+        paquete.agregarSubproducto(new Producto("Jugo de Naranja",5,TipoProducto.BEBIDA));
+        carrito.agregarProducto(paquete);
         
               
         System.out.println("Total del carrito: " + carrito.calcularTotal());                      
@@ -41,7 +53,16 @@ public class Principal {
                             carrito.obtenerProductosAgrupadosPorTipo());
         
         System.out.println("\nPrecio promedio de lo que llevamos en el carrito: " +
-                            carrito.obtenerPrecioPromedio());
+                            carrito.obtenerPrecioPromedio());  
+        
+        System.out.println("\nTodos los productos del carrito de compras son:");
+        carrito.imprimeProductos();
+        
+        System.out.println("\nTodos los productos del carrito de compras de tipo BEBIDA son:");
+        carrito.imprimeProductosPorTipo(TipoProducto.BEBIDA);
+        
+        System.out.println("\nTodos los productos en PAQUETE del carrito de compras son:");        
+        carrito.imprimePaquetes();
         
     }   
 }

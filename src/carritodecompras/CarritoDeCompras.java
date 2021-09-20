@@ -29,7 +29,7 @@ public class CarritoDeCompras {
         
        DoubleBinaryOperator suma = (acumulador , entrada) -> acumulador + entrada;
         
-       return productos.stream()
+       return productos.parallelStream()
                 .mapToDouble(p -> p.getPrecio())
                 //.sum();       
                 //.reduce(0, Double::sum);
@@ -55,7 +55,7 @@ public class CarritoDeCompras {
         Predicate<Producto> predicado = p -> p.getTipo() == tipo;
         
         /*Paradigma Funcional*/
-        return productos.stream()
+        return productos.parallelStream()
                 .filter(predicado)
                 .collect(Collectors.toList());
                               
@@ -66,7 +66,7 @@ public class CarritoDeCompras {
         Function<Producto, TipoProducto> mapper = p -> p.getTipo();
         
         /*Paradigma Funcional*/
-        return productos.stream()
+        return productos.parallelStream()
                 //.peek(p -> System.out.println("Antes del map:" + p))
                 .map(mapper)
                 //.peek(tp -> System.out.println("Después del map, antes del disctinct:" + tp))
@@ -77,7 +77,7 @@ public class CarritoDeCompras {
 
     List<Producto> obtenerProductosDistintos() {        
         /*Paradigma Funcional*/
-        return productos.stream()                
+        return productos.parallelStream()                
                 .distinct()
                 .collect(Collectors.toList());        
     }
@@ -88,36 +88,53 @@ public class CarritoDeCompras {
                     .thenComparing(Producto::getPrecio);
         
         /*Paradigma Funcional*/
-        return productos.stream()
+        return productos.parallelStream()
                 .sorted(comparador)
                 .collect(Collectors.toList());        
     }
 
     List<Producto> obtenerProductosAplicandoDescuento(int pctDescuento, TipoProducto tipo) {
-        return productos.stream()
+        return productos.parallelStream()
                 .peek(p -> {if(p.getTipo()== tipo) p.setPrecio(p.getPrecio() * (100-pctDescuento)/100);})
                 .collect(Collectors.toList());        
                 
     }
 
     String obtenerProductosFormatoJSON() {
-        return productos.stream()
+        return productos.parallelStream()
                 .map(p -> { return "{ nombre:" + p.getNombre() + ", precio:" + p.getPrecio() + ", tipo:" + p.getTipo() + "}"; })
                 .collect(Collectors.joining(","));        
     }
 
     Map<TipoProducto, List<Producto>> obtenerProductosAgrupadosPorTipo() {
-        return productos.stream()
+        return productos.parallelStream()
                 .collect(Collectors.groupingBy(Producto::getTipo));
     }
 
-    double obtenerPrecioPromedio() {
-        return productos.stream()
+    public double obtenerPrecioPromedio() {
+        return productos.parallelStream()
                 .collect(Collectors.averagingDouble(Producto::getPrecio))
                 .doubleValue();
     }
+
+    public void imprimeProductos() {
+        productos.stream()
+                .parallel()
+                .forEach( p -> System.out.println(p));        
+    }
+     
     
-       
-    
-    
+    public void imprimeProductosPorTipo(TipoProducto tipo) {
+        productos.parallelStream()
+                .filter(p -> p.getTipo()== tipo)
+                .forEach(p -> System.out.println(p));
+    }           
+
+    public void imprimePaquetes() {
+        productos.stream()
+                .filter(p -> p.getTipo() == TipoProducto.PAQUETE)
+                .peek(p -> System.out.println(p.getNombre()))
+                .flatMap(p -> p.getSubproductos().stream())
+                .forEach( subproducto -> System.out.println(subproducto) );
+    }
 }
